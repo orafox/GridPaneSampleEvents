@@ -1,20 +1,25 @@
 package sample;
 
 import javafx.application.Application;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 public class Main extends Application {
+    private StringProperty message = new SimpleStringProperty();
+
+    public static void main(String[] args) {
+        launch(args);
+    }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -27,6 +32,9 @@ public class Main extends Application {
         Button cancelBtn = new Button("cancel");
 
         Hyperlink forgetPwdLink = new Hyperlink("Forget Password");
+        Label messageLbl = new Label();
+        messageLbl.textProperty().bind(message);
+
         GridPane root = new GridPane();
         root.setVgap(20);
         root.setPadding(new Insets(10));
@@ -38,17 +46,23 @@ public class Main extends Application {
         GridPane.setConstraints(signBtn, 0, 2);
         GridPane.setConstraints(cancelBtn, 1, 2, 1, 1, HPos.RIGHT, VPos.CENTER);
         GridPane.setConstraints(forgetPwdLink, 0, 3, 2, 1);
-        root.getChildren().addAll(userIdLbl, userIdTxt, userPwd, userPwdTxt, signBtn, cancelBtn, forgetPwdLink);
+        GridPane.setConstraints(messageLbl,0,4,2,1);
+        root.getChildren().addAll(userIdLbl, userIdTxt, userPwd, userPwdTxt, signBtn, cancelBtn, forgetPwdLink,messageLbl);
         signBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
                 System.out.println("Anonymous class handler sign in clicked");
-
+                message.set("Anonymous class handler sign in clicked");
             }
 
 
         });
-        cancelBtn.setOnAction(evt -> System.out.println("lambda handler cancel clicked"));
+        cancelBtn.setOnAction(evt ->
+                {
+                    System.out.println("lambda handler cancel clicked");
+                    message.set("lambda handler cancel clicked");
+                }
+        );
 
         forgetPwdLink.setOnAction(this::forgotPwdHandler);
         Scene scene = new Scene(root, 250, 200);
@@ -61,12 +75,7 @@ public class Main extends Application {
     }
 
     private void forgotPwdHandler(ActionEvent actionEvent) {
-        System.out.println("Methood refernce handler forgot password clicked");
-        
-    }
-
-
-    public static void main(String[] args) {
-        launch(args);
+        System.out.println("Method reference handler forgot password clicked");
+        message.set("Method reference handler forgot password clicked");
     }
 }
